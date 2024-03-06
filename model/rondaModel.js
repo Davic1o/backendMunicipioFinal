@@ -11,11 +11,11 @@ const rondaSchema = new mongoose.Schema({
     },
     fecha:{
         type: String,
-        required: true,
+        required: false,
     },
     asistencia:{
         type: Boolean,
-        required: true,
+        required: false,
     },
 
 });

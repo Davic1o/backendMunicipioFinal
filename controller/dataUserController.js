@@ -20,23 +20,38 @@ exports.createDataUsers = async (req, res) => {
 };
 
 
+// En tu controlador
 exports.updateUserAprobar = async (req, res) => {
     try {
-        const { userId } = req.params; // Obtén el ID del usuario de los parámetros de la URL
-        const { aprobar } = req.body; // Nuevo valor para el campo 'aprobar'
-
-        // Actualizar el usuario específico con el nuevo valor de 'aprobar'
-        const result = await DataUser.findByIdAndUpdate(userId, { $set: { aprobar } }, { new: true });
-
-        if (result) {
-            res.json({ message: 'Usuario actualizado exitosamente', result });
+        const { userId } = req.params;
+        const { accion } = req.body;
+    
+        let updateFields = {};
+        if (accion === 'aprobar') {
+          updateFields = { aprobar: true };
+        } else if (accion === 'rechazar') {
+          updateFields = { rechazar: true };
+        } else if (accion === 'actualizar') {
+          updateFields = { tipo: "coordinador" }; // Aquí actualiza el campo 'tipo'
         } else {
-            res.status(404).json({ error: 'Usuario no encontrado' });
+          res.status(400).json({ error: 'Acción no válida' });
+          return;
         }
-    } catch (error) {
+    
+        const result = await DataUser.findByIdAndUpdate(userId, updateFields, { new: true });
+    
+        if (result) {
+          res.json({ message: 'Usuario actualizado exitosamente', result });
+        } else {
+          res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+      } catch (error) {
         res.status(500).json({ error: error.message });
-    }
+      }
 };
+
+  
+
 
 
 
